@@ -1,4 +1,8 @@
-const { transporter } = require("../config/emailConfig")
+const { transporter } = require("../config/emailConfig");
+const TicketRepository = require("../repository/ticket-repository");
+
+
+const repo= new TicketRepository(); 
 
 const sendBasicEmail = async (mailFrom, mailTo, mailSubject, mailBody) => {
     try {
@@ -14,6 +18,36 @@ const sendBasicEmail = async (mailFrom, mailTo, mailSubject, mailBody) => {
     }
 }
 
+const fetchPendingEmails = async(timestamp) => {  // this fxn is going to fecth all the emails that are pending before this timestamp
+     try {
+        const response= await repo.get({status: "PENDING"});  // this fxn gives all thr
+        return response;
+     }catch (error) {
+        console.log(error);
+     }
+}
+
+const createNotification = async (data)=>{ // this is fxn for creating a ticket
+    try {
+        const response = await repo.create(data);
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+} 
+
+const updateTicket = async (ticketId, data)=> {
+    try {
+       const response = await repo.update(ticketId, data);
+       return response;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports= {
-    sendBasicEmail
+    sendBasicEmail,
+    fetchPendingEmails,
+    createNotification,
+    updateTicket
 }
